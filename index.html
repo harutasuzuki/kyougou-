@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今日号</title>
+<style>
+  :root{
+    --paper:#f7f2e8; --ink:#23211c; --red:#b5372e; --gray:#8a857b; --line:#d9d2c2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:#e8e2d4; color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+    display:flex; justify-content:center; min-height:100vh;
+  }
+  .app{
+    width:100%; max-width:1060px; min-height:100vh; background:var(--paper);
+    box-shadow:0 0 40px rgba(0,0,0,.15); padding-bottom:48px;
+  }
+  .serif{font-family:"Hiragino Mincho ProN","Yu Mincho","BIZ UDMincho",serif;}
+
+  .bar{
+    display:flex; align-items:baseline; gap:16px;
+    padding:22px 28px 14px; border-bottom:2px solid var(--ink);
+  }
+  .bar h1{font-size:26px; letter-spacing:.12em;}
+  .bar .d{font-size:12px; color:var(--gray); letter-spacing:.12em;}
+  .bar .rest{margin-left:auto; font-size:12px; color:var(--red); letter-spacing:.1em;}
+
+  .stage{animation:pg .25s ease;}
+  @keyframes pg{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:30px 24px; padding:28px;
+  }
+  .card{cursor:pointer; position:relative;}
+  .thumb{position:relative; aspect-ratio:16/9; background:#ccc; overflow:hidden;}
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .thumb .dur{
+    position:absolute; right:6px; bottom:6px; background:rgba(0,0,0,.75);
+    color:#fff; font-size:11px; padding:2px 6px;
+  }
+  .bd{
+    position:absolute; left:0; top:0; padding:3px 10px; font-size:10.5px;
+    letter-spacing:.2em; color:#fff; background:var(--gray); z-index:1;
+  }
+  .bd.teiban{background:#3f5c50;}
+  .bd.hakken{background:var(--red);}
+  .card h3{font-size:15px; line-height:1.5; margin:10px 0 4px; font-weight:600;}
+  .card .ch{font-size:11.5px; color:var(--gray);}
+  .card .ds{
+    font-size:12px; color:#6b665c; line-height:1.75; margin-top:6px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .card.off{opacity:.38; cursor:default;}
+  .cstamp{
+    position:absolute; right:8px; top:8px; width:48px; height:48px; border-radius:50%;
+    border:1.5px solid var(--red); color:var(--red); font-size:11px; font-weight:600;
+    display:flex; align-items:center; justify-content:center; transform:rotate(-10deg);
+    background:rgba(247,242,232,.9); z-index:2;
+  }
+  .cstamp.gray{border-color:var(--gray); color:var(--gray);}
+
+  .art{max-width:780px; margin:0 auto; padding:20px 28px 0;}
+  .back{
+    background:none; border:none; color:var(--gray); font-size:12.5px;
+    cursor:pointer; padding:6px 0 14px; letter-spacing:.1em;
+  }
+  .player{position:relative; width:100%; aspect-ratio:16/9; background:#111; overflow:hidden; cursor:pointer;}
+  .player img{width:100%; height:100%; object-fit:cover; display:block; opacity:.92;}
+  .player .pl{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:48px; text-shadow:0 2px 12px rgba(0,0,0,.6);
+  }
+  .player iframe{width:100%; height:100%; border:0; display:block;}
+  .art h2{font-size:21px; line-height:1.5; margin:16px 0 4px;}
+  .meta{font-size:12px; color:var(--gray); letter-spacing:.05em;}
+  .meta a{color:var(--red); text-decoration:none; margin-left:12px;}
+  .desc{font-size:13.5px; line-height:1.9; color:#57524a; margin-top:12px;}
+  .acts{display:flex; gap:10px; margin-top:22px;}
+  .next{
+    flex:2; padding:14px; background:var(--ink); color:var(--paper); border:none;
+    font-size:13.5px; letter-spacing:.15em; cursor:pointer;
+  }
+  .pass{
+    flex:1; padding:14px; background:none; border:1px solid var(--line);
+    color:var(--gray); font-size:12px; cursor:pointer;
+  }
+  .pass:active,.next:active,.card:active{transform:scale(.99);}
+
+  .end{text-align:center; padding:110px 28px 0;}
+  .end h2{font-size:42px; letter-spacing:.14em; margin-bottom:16px;}
+  .end .stats{font-size:13px; color:var(--gray); letter-spacing:.12em; margin-bottom:8px;}
+  .end .nx{font-size:14px; margin-top:22px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bar">
+    <h1 class="serif">今日号</h1>
+    <span class="d" id="date"></span>
+    <span class="rest" id="rest"></span>
+  </div>
+  <div id="stage"></div>
+</div>
+
+<script>
+// ===== 号データ（自己完結・サーバ不要） =====
+const ISSUE = {
+  date: "2026.7.20 月",
+  issue: "第3号・美とデザイン",
+  items: [
+    {badge:"定番", cls:"teiban",
+     title:"ネザーで指名手配される一ノ瀬うるは【マイクラ】",
+     ch:"ガルお2nd【切り抜き】", dur:"15:57", id:"r8C3LglIvtM",
+     desc:"この動画は、マイクラ鯖でブタを狩り続けた蝶屋はなびの巻き添えで、ネザーで指名手配されて追い回される一ノ瀬うるはの切り抜きです。"},
+    {badge:"発見", cls:"hakken",
+     title:"黒一色の美しい器——陶芸家・松本圭嗣の制作とインタビュー",
+     ch:"COMMONS | Stories from Japan", dur:"16:23", id:"2j1qVuFp504",
+     desc:"この動画では、大阪で作陶する陶芸家・松本圭嗣（su-nao home）の黒一色の器の制作プロセスを、インタビューとともに静かな映像で追います。"},
+    {badge:"発見", cls:"hakken",
+     title:"建築家・堀部安嗣の葉山の自邸",
+     ch:"Monochrome | モノクローム", dur:"6:56", id:"EwuR2kpxUSo",
+     desc:"この動画では、建築家・堀部安嗣が自ら設計した葉山の自邸を歩きながら、住まいの「気持ちよさ」がどこから生まれるのかを語ります。"},
+    {badge:"発見", cls:"hakken",
+     title:"「デザインってなんですか？」佐藤オオキのメソッド",
+     ch:"NewsPicks", dur:"11:33", id:"q55yEp7aypE",
+     desc:"この動画では、nendo代表・佐藤オオキが「デザインとは何か」を、自身の発想メソッドとともに語ります。"},
+    {badge:"発見", cls:"hakken",
+     title:"Please stop hiding from life.",
+     ch:"Nathaniel Drew", dur:"4:48", id:"LizVLqxj0CE",
+     desc:"この動画は、「人生から隠れるのをやめろ」という短いビデオエッセイです。洗練された画で内省を扱う作り手。高評価率8%超。"},
+    {badge:"発見", cls:"hakken",
+     title:"クリーピーナッツ、密着取材初日（未公開ロング版）",
+     ch:"情熱大陸 公式チャンネル", dur:"4:56", id:"hKBr5qzpUWs",
+     desc:"この動画は、情熱大陸がCreepy Nutsに密着した初日の未公開ロング映像です。「準備できてないんですけど！」から始まります。"}
+  ]
+};
+// ============================================
+
+const IS_FILE = location.protocol === "file:";   // file://なら埋め込み不可→YouTube直接再生に切替
+const PAGES = ISSUE.items;
+const S = PAGES.map(() => null);
+let cur = 0;
+const stage = document.getElementById("stage");
+const restEl = document.getElementById("rest");
+document.getElementById("date").textContent = `${ISSUE.date}　${ISSUE.issue}`;
+const resolved = () => S.filter(x => x).length;
+const updateRest = () => restEl.textContent = resolved() < PAGES.length ? `のこり ${PAGES.length - resolved()} 本` : "";
+
+function grid(){
+  updateRest();
+  stage.innerHTML = `<div class="stage"><div class="grid">` + PAGES.map((p,i) => {
+    const st = S[i];
+    const stamp = st==="done" ? `<div class="cstamp serif">読了</div>`
+                : st==="pass" ? `<div class="cstamp gray serif">パス</div>` : "";
+    return `<div class="card ${st?"off":""}" ${st?"":`onclick="article(${i})"`}>
+      ${stamp}
+      <div class="thumb"><span class="bd ${p.cls}">${p.badge}</span>
+        <img src="https://i.ytimg.com/vi/${p.id}/mqdefault.jpg" alt="">
+        <span class="dur">${p.dur}</span></div>
+      <h3 class="serif">${p.title}</h3>
+      <div class="ch">${p.ch}</div>
+      <div class="ds">${p.desc}</div>
+    </div>`;
+  }).join("") + `</div></div>`;
+}
+
+function article(i){
+  cur = i;
+  const p = PAGES[i];
+  stage.innerHTML = `
+  <div class="stage"><div class="art">
+    <button class="back" onclick="grid()">← もどる</button>
+    <div class="player" id="pv" onclick="play()">
+      <img src="https://i.ytimg.com/vi/${p.id}/hqdefault.jpg" alt="">
+      <div class="pl">▶</div>
+    </div>
+    <h2 class="serif">${p.title}</h2>
+    <div class="meta">${p.ch}　·　${p.dur}
+     
