@@ -180,4 +180,47 @@ function article(i){
     </div>
     <h2 class="serif">${p.title}</h2>
     <div class="meta">${p.ch}　·　${p.dur}
-     
+      <a href="https://www.youtube.com/watch?v=${p.id}" target="_blank" rel="noopener">YouTubeで開く ↗</a>
+    </div>
+    <p class="desc">${p.desc}</p>
+    <div class="acts">
+      <button class="next" onclick="mark('done')">見終わった</button>
+      <button class="pass" onclick="mark('pass')">パス（既視感）</button>
+      <button class="pass" onclick="mark('pass')">パス（気分じゃない）</button>
+    </div>
+  </div></div>`;
+}
+
+function play(){
+  const p = PAGES[cur];
+  if (IS_FILE){
+    window.open(`https://www.youtube.com/watch?v=${p.id}`, "_blank");
+    return;
+  }
+  document.getElementById("pv").outerHTML =
+    `<div class="player"><iframe
+      src="https://www.youtube.com/embed/${p.id}?autoplay=1&rel=0"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+}
+
+function mark(st){
+  S[cur] = st;
+  resolved() === PAGES.length ? ending() : grid();
+}
+
+function ending(){
+  updateRest();
+  const d = S.filter(x=>x==="done").length, ps = S.filter(x=>x==="pass").length;
+  stage.innerHTML = `
+  <div class="stage"><div class="end">
+    <h2 class="serif">おしまい</h2>
+    <div class="stats">見た ${d}　·　パス ${ps}</div>
+    <p class="nx serif">次は、明日の朝。</p>
+  </div></div>`;
+}
+
+grid();
+</script>
+</body>
+</html>
