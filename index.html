@@ -94,6 +94,12 @@
   .end h2{font-size:42px; letter-spacing:.14em; margin-bottom:16px;}
   .end .stats{font-size:13px; color:var(--gray); letter-spacing:.12em; margin-bottom:8px;}
   .end .nx{font-size:14px; margin-top:22px;}
+  .end .copy{
+    margin:26px auto 0; display:block; padding:13px 26px;
+    background:var(--ink); color:var(--paper); border:none;
+    font-size:12.5px; letter-spacing:.12em; cursor:pointer;
+  }
+  .end .hint{font-size:11px; color:var(--gray); margin-top:10px; letter-spacing:.08em;}
 </style>
 </head>
 <body>
@@ -110,39 +116,45 @@
 // ===== 号データ（自己完結・サーバ不要） =====
 const ISSUE = {
   date: "2026.7.20 月",
-  issue: "第3号・美とデザイン",
+  issue: "第4号・手仕事の時間",
   items: [
     {badge:"定番", cls:"teiban",
-     title:"ネザーで指名手配される一ノ瀬うるは【マイクラ】",
-     ch:"ガルお2nd【切り抜き】", dur:"15:57", id:"r8C3LglIvtM",
-     desc:"この動画は、マイクラ鯖でブタを狩り続けた蝶屋はなびの巻き添えで、ネザーで指名手配されて追い回される一ノ瀬うるはの切り抜きです。"},
+     title:"デス・バイシクル事件【 SqLA 】",
+     ch:"SqLA さくら / Riddle", dur:"10:19", id:"fFK0W5TEEoI",
+     desc:"この動画は、SqLAがサンリオコラボの思い出から、いにしえの害悪プレイヤー、呪物と化した自転車の黒歴史までを語るフリートーク切り抜きです。"},
+    {badge:"準定番", cls:"teiban",
+     title:"What happened to Nathaniel Drew?",
+     ch:"Nathaniel Drew", dur:"19:59", id:"uxb8OjkiZBY",
+     desc:"この動画では、しばらく姿を消していたNathaniel Drewが、トマス・アクィナスの逸話を入り口に「積み上げたものを維持するうちに迷子になった」経緯と、作ることへ戻ってくるまでを語ります。"},
     {badge:"発見", cls:"hakken",
-     title:"黒一色の美しい器——陶芸家・松本圭嗣の制作とインタビュー",
-     ch:"COMMONS | Stories from Japan", dur:"16:23", id:"2j1qVuFp504",
-     desc:"この動画では、大阪で作陶する陶芸家・松本圭嗣（su-nao home）の黒一色の器の制作プロセスを、インタビューとともに静かな映像で追います。"},
+     title:"レースのように美しい。新たなガラス工芸に挑戦する京都の職人",
+     ch:"京都知新", dur:"10:58", id:"8TqxOJ98XOg",
+     desc:"この動画では、螺旋の線がレース模様のように重なる透明なガラスを生み出す京都の職人の、制作過程と工房の日常を追います。"},
     {badge:"発見", cls:"hakken",
-     title:"建築家・堀部安嗣の葉山の自邸",
-     ch:"Monochrome | モノクローム", dur:"6:56", id:"EwuR2kpxUSo",
-     desc:"この動画では、建築家・堀部安嗣が自ら設計した葉山の自邸を歩きながら、住まいの「気持ちよさ」がどこから生まれるのかを語ります。"},
+     title:"書道家のお仕事ルーティーン｜作品「日日是好日」ができるまで",
+     ch:"書と水墨のある暮らし / 根本みき", dur:"14:01", id:"PDYuGXenJkg",
+     desc:"この動画では、書家・根本みきが「日日是好日」を書き上げる一日を、道具の支度から墨の擦り、納得のいく一枚が生まれるまで自ら記録します。"},
     {badge:"発見", cls:"hakken",
-     title:"「デザインってなんですか？」佐藤オオキのメソッド",
-     ch:"NewsPicks", dur:"11:33", id:"q55yEp7aypE",
-     desc:"この動画では、nendo代表・佐藤オオキが「デザインとは何か」を、自身の発想メソッドとともに語ります。"},
+     title:"庭と真摯に向き合う庭師の3日間の情熱ドキュメンタリー",
+     ch:"ギフト【仕事密着72】", dur:"26:45", id:"1pU8q-kXz_M",
+     desc:"この動画は、新潟の庭師・武沢広太の3日間——現場での剪定仕事から庭に向き合う時間まで——に密着したドキュメンタリーです。"},
     {badge:"発見", cls:"hakken",
-     title:"Please stop hiding from life.",
-     ch:"Nathaniel Drew", dur:"4:48", id:"LizVLqxj0CE",
-     desc:"この動画は、「人生から隠れるのをやめろ」という短いビデオエッセイです。洗練された画で内省を扱う作り手。高評価率8%超。"},
-    {badge:"発見", cls:"hakken",
-     title:"クリーピーナッツ、密着取材初日（未公開ロング版）",
-     ch:"情熱大陸 公式チャンネル", dur:"4:56", id:"hKBr5qzpUWs",
-     desc:"この動画は、情熱大陸がCreepy Nutsに密着した初日の未公開ロング映像です。「準備できてないんですけど！」から始まります。"}
+     title:"森の工房でひとり。すご腕家具職人による吸い付き桟のテーブル制作工程",
+     ch:"THE PROCESS", dur:"37:34", id:"ly0LrTQx3zA",
+     desc:"この動画では、森の工房でひとり無垢材と向き合う家具職人YOAKEが、吸い付き桟のテーブルを木取りから仕上げまで完成させる全工程を見せます。"}
   ]
 };
 // ============================================
 
 const IS_FILE = location.protocol === "file:";   // file://なら埋め込み不可→YouTube直接再生に切替
 const PAGES = ISSUE.items;
-const S = PAGES.map(() => null);
+const KEY = "kyougou_state_" + ISSUE.issue;
+let S = PAGES.map(() => null);
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+  if (Array.isArray(saved) && saved.length === PAGES.length) S = saved;
+} catch(e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
 let cur = 0;
 const stage = document.getElementById("stage");
 const restEl = document.getElementById("rest");
@@ -195,32 +207,4 @@ function play(){
   const p = PAGES[cur];
   if (IS_FILE){
     window.open(`https://www.youtube.com/watch?v=${p.id}`, "_blank");
-    return;
-  }
-  document.getElementById("pv").outerHTML =
-    `<div class="player"><iframe
-      src="https://www.youtube.com/embed/${p.id}?autoplay=1&rel=0"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
-}
-
-function mark(st){
-  S[cur] = st;
-  resolved() === PAGES.length ? ending() : grid();
-}
-
-function ending(){
-  updateRest();
-  const d = S.filter(x=>x==="done").length, ps = S.filter(x=>x==="pass").length;
-  stage.innerHTML = `
-  <div class="stage"><div class="end">
-    <h2 class="serif">おしまい</h2>
-    <div class="stats">見た ${d}　·　パス ${ps}</div>
-    <p class="nx serif">次は、明日の朝。</p>
-  </div></div>`;
-}
-
-grid();
-</script>
-</body>
-</html>
+    retur
