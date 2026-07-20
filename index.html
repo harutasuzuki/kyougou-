@@ -207,4 +207,51 @@ function play(){
   const p = PAGES[cur];
   if (IS_FILE){
     window.open(`https://www.youtube.com/watch?v=${p.id}`, "_blank");
-    retur
+    return;
+  }
+  document.getElementById("pv").outerHTML =
+    `<div class="player"><iframe
+      src="https://www.youtube.com/embed/${p.id}?autoplay=1&rel=0"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+}
+
+function mark(st){
+  S[cur] = st;
+  save();
+  resolved() === PAGES.length ? ending() : grid();
+}
+
+function ending(){
+  updateRest();
+  const d = S.filter(x=>x==="done").length, ps = S.filter(x=>x==="pass").length;
+  stage.innerHTML = `
+  <div class="stage"><div class="end">
+    <h2 class="serif">おしまい</h2>
+    <div class="stats">見た ${d}　·　パス ${ps}</div>
+    <p class="nx serif">次は、明日の朝。</p>
+    <button class="copy" onclick="copyReport(this)">今日の結果をコピー</button>
+    <p class="hint">チャットに貼ると、次の号がかしこくなる</p>
+  </div></div>`;
+}
+
+function copyReport(btn){
+  const lines = [ISSUE.issue + " の結果"];
+  PAGES.forEach((p,i)=>{ lines.push((S[i]==="done" ? "見た" : "パス") + "：" + p.title); });
+  const txt = lines.join("\n");
+  const done = () => { btn.textContent = "コピーした！あとはチャットに貼るだけ"; };
+  const fallback = () => {
+    const ta = document.createElement("textarea");
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch(e) {}
+    ta.remove(); done();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(fallback);
+  } else fallback();
+}
+
+grid();
+</script>
+</body>
+</html>
