@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>今日号 · 再生</title>
+<style>
+  :root{--bg:#111;--ink:#ece6d8;--muted:#9a9488;--red:#de6c60}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  .frame{position:relative;width:100%;max-width:1100px;aspect-ratio:16/9;background:#000}
+  .frame iframe,.frame #p{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .end{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--bg);text-align:center;padding:16px}
+  .end.on{display:flex}
+  .end b{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:24px;letter-spacing:.14em}
+  .note{font-size:12px;color:var(--muted);letter-spacing:.06em;text-align:center}
+  a{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="frame"><div id="p"></div>
+  <div class="end" id="end"><b>おしまい</b><span class="note">このタブを閉じて、今日号で評価してください</span></div>
+</div>
+<p class="note" id="msg">見終わったら、このタブを閉じて今日号に戻る</p>
+<script>
+const id = (location.hash || "").slice(1);
+const ok = /^[A-Za-z0-9_-]{11}$/.test(id);
+const msg = document.getElementById("msg");
+if (!ok) { msg.textContent = "動画が指定されていません。今日号から開いてください。"; }
+else {
+  window.onYouTubeIframeAPIReady = () => {
+    new YT.Player("p", {
+      host: "https://www.youtube-nocookie.com",
+      videoId: id,
+      playerVars: { rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3 },
+      events: {
+        // 再生が終わったら終了画面のおすすめ動画を覆って見せない
+        onStateChange: (e) => { if (e.data === 0) document.getElementById("end").classList.add("on"); },
+        onError: () => {
+          msg.innerHTML = "";
+          msg.append("この動画は埋め込み再生が許可されていません。");
+          const a = document.createElement("a");
+          a.href = "https://www.youtube.com/watch?v=" + id; a.textContent = "YouTubeで開く"; a.rel = "noopener";
+          msg.append(a);
+        }
+      }
+    });
+  };
+  const s = document.createElement("script");
+  s.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(s);
+}
+</script>
+</body>
+</html>
